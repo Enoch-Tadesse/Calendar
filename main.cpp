@@ -14,6 +14,7 @@ unordered_map<int, int> greg_century_code = {{1700, 4}, {1800, 2}, {1900, 0},
 vector<int> greg_month_code = {0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5};
 
 int get_leap_year_code(int, int);
+int isJulianLeapYear(int);
 int isGregLeapYear(int);
 vector<vector<int>> con_matirx(int, int, int, int);
 
@@ -25,10 +26,9 @@ int main() {
   int century_code = ((18 - year / 100) % 7) * (year < 1752) +
                      (greg_century_code[year / 100 * 100]) * (year > 1752);
   int year_code = ((year % 100) + (year % 100) / 4) % 7;
-  int leap_year_code = (year % 4 == 0) * (year > 4) * (year < 1752) +
-                       get_leap_year_code(month, year) * (year > 1752);
+  int leap_year_code = get_leap_year_code(month, year);
   int start_day = (year_code + greg_month_code[month - 1] + century_code + 1 -
-                   leap_year_code) %
+                   leap_year_code + 1 * (year < 8)) %
                   7;
   cout << "Year: " << year_code << endl;
   cout << "LYC: " << leap_year_code << endl;
@@ -47,18 +47,27 @@ int main() {
 }
 
 int get_leap_year_code(int month, int year) {
-  if (isGregLeapYear(year) && month <= 2)
+  //
+  if ((isGregLeapYear(year) || isJulianLeapYear(year)) && month <= 2)
     return 1;
   else
     return 0;
 }
 
 int isGregLeapYear(int year) {
+  // checks if the date is Gregorean Leap Year
   if (((year % 4 == 0 && year % 400 != 100) || year % 400 == 0) &&
       (year > 1752))
     return 1;
   else
     return 0;
+}
+
+int isJulianLeapYear(int year) {
+  // checks if the date is a Julian Leap Year
+  if (year % 4 == 0 && year > 4 && year < 1752)
+    return 1;
+  return 0;
 }
 
 vector<vector<int>> con_matirx(int start_day, int month, int year,
