@@ -7,7 +7,7 @@ vector<int> greg_month_count = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 int isLeapYear(int);
 int calc_days_passed(int, int);
 unordered_map<int, int> century_code = {
-    {1800, 2}, {1900, 1}, {2000, 0}, {2100, 0}};
+    {1800, 1}, {1900, 1}, {2000, 0}, {2100, 0}};
 
 int main() {
   int month, year;
