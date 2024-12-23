@@ -24,8 +24,9 @@ int main() {
   int id = generateId(month, year);
   int specialId = 91752;
   vector<vector<int>> some;
-  int century_code = ((18 - year / 100) % 7) * (id <= specialId) +
-                     (greg_century_code[year / 100 * 100]) * (id > specialId);
+  int century_code =
+      ((18 - year / 100) % 7) * (month <= 9 && year <= 1752) +
+      (greg_century_code[year / 100 * 100]) * !(month <= 9 && year <= 1752);
   int year_code = ((year % 100) + (year % 100) / 4) % 7;
   int leap_year_code = get_leap_year_code(month, year);
   int start_day = (year_code + greg_month_code[month - 1] + century_code + 1 -
@@ -73,7 +74,7 @@ int isJulianLeapYear(int year) {
 
 vector<vector<int>> con_matirx(int start_day, int month, int year,
                                int leap_year_code, int id, int specialId) {
-  cout << start_day << endl;
+  cout << " start_day : " << start_day << endl;
   int rows;
   int cols = 7;
   int days = greg_month_count[month - 1] +
