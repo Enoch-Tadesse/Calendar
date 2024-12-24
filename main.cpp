@@ -67,7 +67,7 @@ int isGregLeapYear(int year) {
 
 int isJulianLeapYear(int year) {
   // checks if the date is a Julian Leap Year
-  if (year % 4 == 0 && year != 4 && year < 1752)
+  if (year % 4 == 0 && year != 4 && year <= 1752)
     return 1;
   return 0;
 }
@@ -78,8 +78,12 @@ vector<vector<int>> con_matirx(int start_day, int month, int year,
   int rows;
   int cols = 7;
   int days = greg_month_count[month - 1] +
-             (isGregLeapYear(year) + leap_year_code * (year < 1752)) *
+             (isGregLeapYear(year) + leap_year_code * (year <= 1752)) *
                  (month - 1 == 1);
+  cout << "Flag date: "
+       << (isGregLeapYear(year) + leap_year_code * (year <= 1752)) *
+              (month - 1 == 1)
+       << endl;
   int remaining_days = days - (7 - start_day);
   rows = ceil((float)(remaining_days) / 7.0) + 1;
   int offset = start_day;
