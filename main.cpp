@@ -1,3 +1,4 @@
+#include "datelib.h"
 #include <cmath>
 #include <iostream>
 #include <unordered_map>
@@ -5,113 +6,128 @@
 
 using namespace std;
 
-vector<int> greg_month_count = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+struct Cell {
 
-unordered_map<int, int> greg_century_code = {{1700, 4}, {1800, 2}, {1900, 0},
-                                             {2000, 6}, {2100, 4}, {2200, 2},
-                                             {2300, 0}};
+  string gregVal = "     |";
+  string ethVal = "     |";
 
-vector<int> greg_month_code = {0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5};
-int generateId(int, int);
-int get_leap_year_code(int, int);
-int isJulianLeapYear(int);
-int isGregLeapYear(int);
-vector<vector<int>> con_matirx(int, int, int, int, int, int);
+  void set_greg_val(int num) {
+    int i = 4;
+    while (num > 0) {
+      gregVal[i] = char(num % 10 + '0');
+      i -= 1;
+      num /= 10;
+    }
+  }
+  void set_eth_val(int num, int max) {
+    if (num > max)
+      num -= max;
+    if (num > 360)
+      num -= 360;
+    num %= 30;
+    if (num == 0)
+      num = 30;
+    int i = int(log10(num));
+    while (num > 0) {
+      ethVal[i] = char(num % 10 + '0');
+      i -= 1;
+      num /= 10;
+    }
+  }
+};
+
+void print(vector<vector<int>> &, int, int);
+vector<vector<int>> con_matirx(int, int);
 
 int main() {
   int month, year;
   cin >> month >> year;
-  int id = generateId(month, year);
-  int specialId = 91752;
-  vector<vector<int>> some;
-  int century_code =
-      ((18 - year / 100) % 7) * (month <= 9 && year <= 1752) +
-      (greg_century_code[year / 100 * 100]) * !(month <= 9 && year <= 1752);
+  vector<vector<int>> mat = con_matirx(month, year);
+  int ethDay = calc_days_passed(month, year);
+  int ethMax = ethMaxDays(month, year);
+  cout << "max: " << ethMax << endl;
+  print(mat, ethDay, ethMax);
+
+  return 0;
+}
+
+void print(vector<vector<int>> &mat, int ethDay, int ethMax) {
+
+  cout << "|-----------------------------------------|" << endl;
+  cout << "|Sun  |Mon  |Tue  |Wed  |Thu  |Fri  |Sat  |" << endl;
+  cout << "|-----------------------------------------|" << endl;
+
+  for (int r = 0; r < mat.size(); r++) {
+    cout << "|";
+    Cell cell[7];
+    for (int c = 0; c < mat[r].size(); c++) {
+      cell[c].set_greg_val(mat[r][c]);
+      // int temp = ethDay - int(ethDay / ethMax);
+      if (mat[r][c] != 0) {
+        cell[c].set_eth_val(ethDay, ethMax);
+        ethDay++;
+      }
+
+      cout << cell[c].gregVal;
+      // ethDay ++;
+    }
+    cout << endl;
+
+    cout << "|";
+    for (int c = 0; c < mat[r].size(); c++) {
+      cout << cell[c].ethVal;
+    }
+    cout << endl;
+    cout << "|-----------------------------------------|" << endl;
+  }
+}
+
+vector<vector<int>> con_matirx(int month, int year) {
+  int century_code;
+  if (year < 1752 || (month <= 9 && year == 1752)) {
+    century_code = (18 - year / 100) % 7;
+  } else {
+    century_code = greg_century_code[year / 100 * 100];
+  }
+  // int century_code =
+  // ((18 - year / 100) % 7) * (month <= 9 && year <= 1752) +
+  // (greg_century_code[year / 100 * 100]) * !(month <= 9 && year <= 1752);
   int year_code = ((year % 100) + (year % 100) / 4) % 7;
   int leap_year_code = get_leap_year_code(month, year);
   int start_day = (year_code + greg_month_code[month - 1] + century_code + 1 -
                    leap_year_code + 1 * (year < 4)) %
                   7;
-  cout << "Year: " << year_code << endl;
-  cout << "LYC: " << leap_year_code << endl;
-  cout << "start_day: " << start_day << endl;
-  cout << "century_code: " << century_code << endl;
-  some = con_matirx(start_day, month, year, leap_year_code, id, specialId);
-
-  for (int i = 0; i < some.size(); i++) {
-    for (int j = 0; j < some[i].size(); j++) {
-      cout << some[i][j] << " ";
-    }
-    cout << endl;
-  }
-
-  return 0;
-}
-
-int get_leap_year_code(int month, int year) {
-  // returns a leap year code for basic start day calculation
-  if ((isGregLeapYear(year) || isJulianLeapYear(year)) && month <= 2)
-    return 1;
-  else
-    return 0;
-}
-
-int isGregLeapYear(int year) {
-  // checks if the date is Gregorean Leap Year
-  if (((year % 4 == 0 && year % 400 != 100) || year % 400 == 0) &&
-      (year > 1752))
-    return 1;
-  else
-    return 0;
-}
-
-int isJulianLeapYear(int year) {
-  // checks if the date is a Julian Leap Year
-  if (year % 4 == 0 && year != 4 && year <= 1752)
-    return 1;
-  return 0;
-}
-
-vector<vector<int>> con_matirx(int start_day, int month, int year,
-                               int leap_year_code, int id, int specialId) {
-  cout << " start_day : " << start_day << endl;
+  cout << "leap_year_code" << leap_year_code << endl;
+  cout << "Start day: " << start_day << endl;
   int rows;
   int cols = 7;
   int days = greg_month_count[month - 1] +
              (isGregLeapYear(year) + leap_year_code * (year <= 1752)) *
                  (month - 1 == 1);
-  cout << "Flag date: "
-       << (isGregLeapYear(year) + leap_year_code * (year <= 1752)) *
-              (month - 1 == 1)
-       << endl;
+
   int remaining_days = days - (7 - start_day);
   rows = ceil((float)(remaining_days) / 7.0) + 1;
   int offset = start_day;
+
   vector<int> single_row(cols, 0);
-  if (id != specialId) {
-    vector<vector<int>> num(rows, single_row);
+  if (!(month == 9 && year == 1752)) {
+    vector<vector<int>> mat(rows, single_row);
     for (int i = 0; i < days; i++) {
-      num[(offset + i) / cols][(offset + i) % cols] = i + 1;
+      mat[(offset + i) / cols][(offset + i) % cols] = i + 1;
     }
-    return num;
+    return mat;
   }
-  int values = 0;
+  int fillValues = 0;
   rows = ceil((float)(remaining_days - 11) / 7.0) + 1;
-  vector<vector<int>> num(rows, single_row);
+  vector<vector<int>> mat(rows, single_row);
 
   for (int i = 0; i < days; i++) {
-    if (values < greg_month_count[month - 1]) {
-      num[(offset + i) / cols][(offset + i) % cols] = values + 1;
-      values += 1 + 11 * (i == 1);
+    if (fillValues < greg_month_count[month - 1]) {
+      mat[(offset + i) / cols][(offset + i) % cols] = fillValues + 1;
+      fillValues += 1 + 11 * (i == 1);
     } else {
       break;
     }
   }
-  return num;
-}
-
-int generateId(int month, int year) {
-  // generates a unique id for all dates
-  int digits = (year == 0) ? 1 : int(log10(year) + 1);
-  return month * pow(10, digits) + year;
+  return mat;
 }
