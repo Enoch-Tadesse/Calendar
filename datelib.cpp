@@ -82,7 +82,7 @@ int calc_days_passed_jul(int month, int year) {
     // days_passed += day - 30;
     days_passed -= 30;
   }
-  return days_passed;
+  return days_passed + 1 * ((year < 4) || (month <= 8 && year == 4));
 }
 
 int calc_days_passed(int month, int year) {
