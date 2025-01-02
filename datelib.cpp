@@ -9,7 +9,6 @@ using namespace std;
 string eth_months[] = {"Meskerem", "Tikimt",  "Hedar",    "Tahesas", "Tir",
                        "Yekatit",  "Megabit", "Miyaziya", "Genbot",  "Sene",
                        "Hamle",    "Nehase",  "Pagume"};
-;
 int eth_months_count[] = {30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 5};
 string greg_months[] = {"January",   "February", "March",    "April",
                         "May",       "June",     "July",     "August",
@@ -50,17 +49,16 @@ int calc_days_passed_greg(int month, int year) {
     days_passed += day;
   } else {
     /*if month is above below and equal to september, add days from past year
-     * too
-     */
+     * too*/
     century_id = ceil(float(year) / 100) * 100; // century transition handling
-    for (int i = 8; i < 12; i++) {
+    days_passed += greg_month_count[8] - ethiopianNewYearDay + day;
+    for (int i = 9; i < 12; i++) {
       days_passed += month_count[i];
     } // past year addition
-    days_passed += greg_month_count[8] - ethiopianNewYearDay + day;
     for (int i = 0; i < month - 1; i++) {
       days_passed += month_count[i];
     } // current year addition
-    days_passed += day - 30;
+    days_passed += day;
   }
 
   int offset = century_code[century_id];
@@ -91,14 +89,14 @@ int calc_days_passed_jul(int month, int year) {
   } else {
     /* to consider countin from past year since the date is below Ethiopian new
      * year */
-    for (int i = 7; i < 12; i++) {
+    days_passed += greg_month_count[7] - ethiopianNewYearDay + day;
+    for (int i = 8; i < 12; i++) {
       days_passed += month_count[i];
     }
-    days_passed += greg_month_count[7] - ethiopianNewYearDay + day;
     for (int i = 0; i < month - 1; i++) {
       days_passed += month_count[i];
     } // counting current year days
-    days_passed -= 30;
+    days_passed += day;
   }
   return days_passed + 1 * ((year < 4) || (month <= 8 && year == 4));
 }
@@ -158,14 +156,10 @@ void print_header(int year, int month, int eth_passed, int max_eth) {
    * also Gregorean months and Ethiopian months */
 
   cout << "Gregorean Year: " << year << "\t";
-  if ((month == 9 && year > 1752) || (month == 8 && year <= 1752)) {
+  if (year - 8 > 0) {
     cout << "Ethiopian Year: " << year - 8 << " - " << year - 7 << endl;
   } else {
-    cout << "Ethiopian Year: "
-         << year - 7 -
-                1 * ((month < 9 && year > 1752) || (month < 8 && year >= 1752))
-         << endl;
-    ;
+    cout << "Ethiopian Year: " << year - 7 << endl;
   }
 
   cout << greg_months[month - 1] << "\t";
@@ -175,6 +169,7 @@ void print_header(int year, int month, int eth_passed, int max_eth) {
   int days_greg =
       greg_month_count[month - 1] +
       (month == 2 && (isGregLeapYear(year) || isJulianLeapYear(year)));
+  days_greg -= 11 * int(year == 1752 && month == 9);
   if (eth_passed % 30 == 0)
     cout << eth_months[start - 1] << "-";
   while (days_greg > 0) {
@@ -269,7 +264,10 @@ void print(int month, int year) {
     for (int c = 0; c < mat[r].size(); c++) {
       cell[c].set_greg_val(mat[r][c]); // fill the Gregorean days
       if (mat[r][c] != 0) {
-        cell[c].set_eth_val(ethDay, ethMax); // fill the Ethiopian days
+        if (!((year < 8) || (year == 8 && month < 8) ||
+              (year == 8 && month <= 8 && mat[r][c] < 29))) {
+          cell[c].set_eth_val(ethDay, ethMax);
+        } // fill the Ethiopian days
         ethDay++;
       }
 

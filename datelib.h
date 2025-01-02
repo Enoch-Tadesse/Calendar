@@ -30,9 +30,8 @@ int ethMaxDays(int, int);
 
 struct Cell {
 
-  std::string gregVal = "     |";
-  std::string ethVal = "     |";
-
+  char gregVal[7] = {' ', ' ', ' ', ' ', ' ', '|', '\0'};
+  char ethVal[7] = {' ', ' ', ' ', ' ', ' ', '|', '\0'};
   void set_greg_val(int num) {
     int i = 4;
     while (num > 0) {
