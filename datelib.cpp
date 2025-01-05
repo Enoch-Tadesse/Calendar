@@ -29,40 +29,32 @@ int calc_days_passed_greg(int month, int year) {
    * era and returns it*/
   const int day = 1;
   int days_passed = 0;
-  vector<int> month_count = greg_month_count;
-  month_count[1] += isGregLeapYear(year); // account february
-  int century_id;
-  int ethiopianNewYearDay;
-  if (month <= 9) { // gets the day of ethiopian new year
-    ethiopianNewYearDay = (year - 8) % 4 == 0 ? 12 : 11;
-  } else {
-    ethiopianNewYearDay = (year - 7) % 4 == 0 ? 12 : 11;
-  }
 
   if (month > 9) {
-    century_id =
+    int ethiopianNewYearDay = (year - 7) % 4 == 0 ? 12 : 11;
+    int century_id =
         ceil(float(year + 1) / 100) * 100; // century transition handling
-    days_passed += day - ethiopianNewYearDay + month_count[8];
-    for (int i = 9; i < month - 1; i++) {
-      days_passed += month_count[i];
+    days_passed += day - ethiopianNewYearDay;
+    for (int i = 8; i < month - 1; i++) {
+      days_passed += greg_month_count[i];
     }
-    days_passed += day;
+    days_passed += day + century_code[century_id];
+
   } else {
+
     /*if month is above below and equal to september, add days from past year
      * too*/
-    century_id = ceil(float(year) / 100) * 100; // century transition handling
-    days_passed += greg_month_count[8] - ethiopianNewYearDay + day;
-    for (int i = 9; i < 12; i++) {
-      days_passed += month_count[i];
-    } // past year addition
+
+    days_passed += calc_days_passed(13, year - 1); // past year addition
+
+    vector<int> month_count = greg_month_count;
+    month_count[1] += isGregLeapYear(year); // account february
     for (int i = 0; i < month - 1; i++) {
       days_passed += month_count[i];
     } // current year addition
-    days_passed += day;
   }
 
-  int offset = century_code[century_id];
-  return days_passed + offset; // consider the offsets
+  return days_passed; // consider the offsets
 }
 
 int calc_days_passed_jul(int month, int year) {
@@ -70,35 +62,26 @@ int calc_days_passed_jul(int month, int year) {
    */
   const int day = 1;
   int days_passed = 0;
-  vector<int> month_count = greg_month_count;
-  month_count[1] += isJulianLeapYear(year); // account february
-
-  int ethiopianNewYearDay;
-  if (month <= 8) {
-    ethiopianNewYearDay = (year - 8) % 4 == 0 ? 30 : 29;
-  } else {
-    ethiopianNewYearDay = (year - 7) % 4 == 0 ? 30 : 29;
-  } // get the day of the ethiopian new year
 
   if (month > 8) {
-    days_passed += day - ethiopianNewYearDay + month_count[7];
-    for (int i = 8; i < month - 1; i++) {
-      days_passed += month_count[i];
+    int ethiopianNewYearDay = (year - 7) % 4 == 0 ? 30 : 29;
+    days_passed += day - ethiopianNewYearDay;
+    for (int i = 7; i < month - 1; i++) {
+      days_passed += greg_month_count[i];
     }
-    days_passed += day;
+    days_passed += day + 1 * ((year < 4) || (month <= 8 && year == 4));
   } else {
     /* to consider countin from past year since the date is below Ethiopian new
      * year */
-    days_passed += greg_month_count[7] - ethiopianNewYearDay + day;
-    for (int i = 8; i < 12; i++) {
-      days_passed += month_count[i];
-    }
+    days_passed += calc_days_passed_jul(13, year - 1);
+
+    vector<int> month_count = greg_month_count;
+    month_count[1] += isJulianLeapYear(year); // account february
     for (int i = 0; i < month - 1; i++) {
       days_passed += month_count[i];
     } // counting current year days
-    days_passed += day;
   }
-  return days_passed + 1 * ((year < 4) || (month <= 8 && year == 4));
+  return days_passed;
 }
 
 int calc_days_passed(int month, int year) {
@@ -158,29 +141,39 @@ void print_header(int year, int month, int eth_passed, int max_eth) {
   cout << "Gregorean Year: " << year << '\t';
   if (year - 8 > 0) {
     cout << "Ethiopian Year: " << year - 8 << " - " << year - 7 << endl;
-  } else {
+  } else if (year - 8 == 0) {
     cout << "Ethiopian Year: " << year - 7 << endl;
+  } else {
+    cout << endl;
   }
 
   cout << greg_months[month - 1] << "\t";
-  int start = floor(eth_passed / 30);
-  eth_months_count[12] = max_eth % 360;
-  eth_months_count[start % 13] -= eth_passed % 30;
-  int days_greg =
-      greg_month_count[month - 1] +
-      (month == 2 && (isGregLeapYear(year) || isJulianLeapYear(year)));
-  days_greg -= 11 * int(year == 1752 && month == 9);
-  if (eth_passed % 30 == 0)
-    cout << eth_months[start - 1] << "-";
-  while (days_greg > 0) {
-    start %= 13;
-    days_greg -= eth_months_count[start];
-    if (days_greg > 0)
-      cout << eth_months[start] << "-";
-    else
-      cout << eth_months[start] << '\t';
+  if (year > 8 || year == 8 && month >= 8) {
+    int days_greg =
+        greg_month_count[month - 1] +
+        (month == 2 && (isGregLeapYear(year) || isJulianLeapYear(year)));
+    days_greg -= 11 * int(year == 1752 && month == 9);
+    if (year == 8 && month == 8) {
+      eth_passed = 3;
+      days_greg = 3;
+    }
+    int start = floor(eth_passed / 30);
 
-    start++;
+    eth_months_count[12] = max_eth % 360;
+    eth_months_count[start % 13] -= eth_passed % 30;
+
+    if (eth_passed % 30 == 0) // accounting "meskerem"
+      cout << eth_months[start - 1] << "-";
+    while (days_greg > 0) {
+      start %= 13;
+      days_greg -= eth_months_count[start];
+      if (days_greg > 0)
+        cout << eth_months[start] << "-";
+      else
+        cout << eth_months[start] << '\t';
+
+      start++;
+    }
   }
   cout << endl;
 }
