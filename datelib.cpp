@@ -155,7 +155,7 @@ void print_header(int year, int month, int eth_passed, int max_eth) {
   /* prints header for Gregorean year and Ethiopian year
    * also Gregorean months and Ethiopian months */
 
-  cout << "Gregorean Year: " << year << "\t";
+  cout << "Gregorean Year: " << year << '\t';
   if (year - 8 > 0) {
     cout << "Ethiopian Year: " << year - 8 << " - " << year - 7 << endl;
   } else {
