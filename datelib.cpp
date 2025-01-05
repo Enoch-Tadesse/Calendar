@@ -13,16 +13,26 @@ int eth_months_count[] = {30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 5};
 string greg_months[] = {"January",   "February", "March",    "April",
                         "May",       "June",     "July",     "August",
                         "September", "October",  "November", "December"};
-unordered_map<int, int> century_code = {
-    {1800, 2}, {1900, 1}, {2000, 0}, {2100, 0}};
+/*unordered_map<int, int> century_offset = {
+    {1800, 2}, {1900, 1}, {2000, 0}, {2100, 0}};*/
 
 vector<int> greg_month_count = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-unordered_map<int, int> greg_century_code = {{1700, 4}, {1800, 2}, {1900, 0},
+/*unordered_map<int, int> greg_century_code = {{1700, 4}, {1800, 2}, {1900, 0},
                                              {2000, 6}, {2100, 4}, {2200, 2},
-                                             {2300, 0}};
+                                             {2300, 0}, {2400, 6}, {2500, 4}};*/
 
 vector<int> greg_month_code = {0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5};
+
+int get_century_offset(int century_num) {
+  int min = 1800;
+  int base = 2;
+  for (int i = min; i < century_num; i += 100) {
+    if (i % 400 != 0)
+      base -= 1;
+  }
+  return base;
+}
 
 int calc_days_passed_greg(int month, int year) {
   /* calculates how many days passed since the ethiopian new year in gregorean
@@ -38,7 +48,8 @@ int calc_days_passed_greg(int month, int year) {
     for (int i = 8; i < month - 1; i++) {
       days_passed += greg_month_count[i];
     }
-    days_passed += day + century_code[century_id];
+    days_passed += day + get_century_offset(century_id);
+    // days_passed += day + century_offset[century_id];
 
   } else {
 
@@ -164,10 +175,10 @@ void print_header(int year, int month, int eth_passed, int max_eth) {
 
     if (eth_passed % 30 == 0) // accounting "meskerem"
       cout << eth_months[start - 1] << "-";
-    while (days_greg > 0) {
+    while (days_greg > 1) {
       start %= 13;
       days_greg -= eth_months_count[start];
-      if (days_greg > 0)
+      if (days_greg > 1)
         cout << eth_months[start] << "-";
       else
         cout << eth_months[start] << '\t';
@@ -185,7 +196,8 @@ vector<vector<int>> con_matirx(int month, int year) {
   if (year < 1752 || (month <= 9 && year == 1752)) {
     century_code = (18 - year / 100) % 7;
   } else {
-    century_code = greg_century_code[year / 100 * 100];
+    century_code = (6 - 2 * ((year / 100) % 4)) % 7;
+    // century_code = greg_century_code[year / 100 * 100];
   }
 
   int year_code = ((year % 100) + (year % 100) / 4) % 7;

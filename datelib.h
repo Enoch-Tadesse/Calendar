@@ -28,6 +28,8 @@ int isGregLeapYear(int);
 int calc_days_passed(int, int);
 int ethMaxDays(int, int);
 
+int get_century_offset(int);
+
 struct Cell {
 
   char gregVal[7] = {' ', ' ', ' ', ' ', ' ', '|', '\0'};
