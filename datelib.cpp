@@ -1,7 +1,6 @@
 #include "datelib.h"
 #include <iostream>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 using namespace std;
@@ -13,14 +12,7 @@ int eth_months_count[] = {30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 5};
 string greg_months[] = {"January",   "February", "March",    "April",
                         "May",       "June",     "July",     "August",
                         "September", "October",  "November", "December"};
-/*unordered_map<int, int> century_offset = {
-    {1800, 2}, {1900, 1}, {2000, 0}, {2100, 0}};*/
-
 vector<int> greg_month_count = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
-/*unordered_map<int, int> greg_century_code = {{1700, 4}, {1800, 2}, {1900, 0},
-                                             {2000, 6}, {2100, 4}, {2200, 2},
-                                             {2300, 0}, {2400, 6}, {2500, 4}};*/
 
 vector<int> greg_month_code = {0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5};
 
@@ -49,7 +41,6 @@ int calc_days_passed_greg(int month, int year) {
       days_passed += greg_month_count[i];
     }
     days_passed += day + get_century_offset(century_id);
-    // days_passed += day + century_offset[century_id];
 
   } else {
 
@@ -197,7 +188,6 @@ vector<vector<int>> con_matirx(int month, int year) {
     century_code = (18 - year / 100) % 7;
   } else {
     century_code = (6 - 2 * ((year / 100) % 4)) % 7;
-    // century_code = greg_century_code[year / 100 * 100];
   }
 
   int year_code = ((year % 100) + (year % 100) / 4) % 7;
