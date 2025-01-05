@@ -1,5 +1,6 @@
 #pragma once
 #include <cwchar>
+#include <iostream>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -43,6 +44,8 @@ struct Cell {
     }
   }
   void set_eth_val(int num, int max) {
+    if (num <= 0) // to handle month that start within pagumen
+      num += max % 100;
     if (num > max)
       num -= max;
     if (num > 360)

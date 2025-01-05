@@ -55,7 +55,6 @@ int calc_days_passed_greg(int month, int year) {
       days_passed += month_count[i];
     } // current year addition
   }
-
   return days_passed; // consider the offsets
 }
 
@@ -166,6 +165,8 @@ void print_header(int year, int month, int eth_passed, int max_eth) {
 
     if (eth_passed % 30 == 0) // accounting "meskerem"
       cout << eth_months[start - 1] << "-";
+    if (eth_passed < 0)
+      cout << eth_months[12] << "-"; // pagument starting months
     while (days_greg > 1) {
       start %= 13;
       days_greg -= eth_months_count[start];

@@ -7,6 +7,5 @@ int main() {
   int month, year;
   cin >> month >> year;
   print(month, year);
-  cin.get();
   return 0;
 }
