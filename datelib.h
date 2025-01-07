@@ -28,7 +28,7 @@ int isGregLeapYear(int);
 
 int calc_days_passed(int, int);
 int ethMaxDays(int, int);
-
+int get_jul_exception_offset(int, int);
 int get_century_offset(int);
 
 struct Cell {
@@ -46,14 +46,14 @@ struct Cell {
   void set_eth_val(int num, int max) {
     if (num <= 0) // to handle month that start within pagumen
       num += max % 100;
-    if (num > max)
+    if (num > max) // if it gets into meskerem
       num -= max;
-    if (num > 360)
+    if (num > 360) // if it gets to pagumen
       num -= 360;
-    num %= 30;
-    if (num == 0)
+    num %= 30;    // limits it to a month count of 30
+    if (num == 0) // if it's the last day of the month
       num = 30;
-    int i = int(log10(num));
+    int i = int(log10(num)); // gets the digit length
     while (num > 0) {
       ethVal[i] = char(num % 10 + '0');
       i -= 1;

@@ -1,13 +1,14 @@
 #include "datelib.h"
 #include <iostream>
+#include <ostream>
 #include <string>
 #include <vector>
 
 using namespace std;
 
-string eth_months[] = {"Meskerem", "Tikimt",  "Hedar",    "Tahesas", "Tir",
-                       "Yekatit",  "Megabit", "Miyaziya", "Genbot",  "Sene",
-                       "Hamle",    "Nehase",  "Pagume"};
+string eth_months[] = {"Meskerem", "Tikimt",   "Hidar",   "Tahsas", "Tir",
+                       "Yekatit",  "Meggabit", "Miyazya", "Ginbot", "Sene",
+                       "Hamle",    "Nehase",   "Pagume"};
 int eth_months_count[] = {30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 5};
 string greg_months[] = {"January",   "February", "March",    "April",
                         "May",       "June",     "July",     "August",
@@ -16,7 +17,9 @@ vector<int> greg_month_count = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 vector<int> greg_month_code = {0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5};
 
-int get_century_offset(int century_num) {
+int get_century_offset(int year) {
+  // returns the century offset based on their century
+  int century_num = ceil(float(year + 1) / 100) * 100;
   int min = 1800;
   int base = 2;
   for (int i = min; i < century_num; i += 100) {
@@ -34,13 +37,12 @@ int calc_days_passed_greg(int month, int year) {
 
   if (month > 9) {
     int ethiopianNewYearDay = (year - 7) % 4 == 0 ? 12 : 11;
-    int century_id =
-        ceil(float(year + 1) / 100) * 100; // century transition handling
     days_passed += day - ethiopianNewYearDay;
     for (int i = 8; i < month - 1; i++) {
       days_passed += greg_month_count[i];
     }
-    days_passed += day + get_century_offset(century_id);
+    days_passed +=
+        day + get_century_offset(year); // century transitioning handling
 
   } else {
 
@@ -58,9 +60,13 @@ int calc_days_passed_greg(int month, int year) {
   return days_passed; // consider the offsets
 }
 
+int get_jul_exception_offset(int month, int year) {
+  // handles the year 4 february exceptions
+  return int((year < 4) || (month <= 8 && year == 4));
+}
 int calc_days_passed_jul(int month, int year) {
-  /* calculates and returns days passed since ethiopian new year in julian era
-   */
+  // calculates and returns days passed since ethiopian new year in julian era
+
   const int day = 1;
   int days_passed = 0;
 
@@ -70,7 +76,7 @@ int calc_days_passed_jul(int month, int year) {
     for (int i = 7; i < month - 1; i++) {
       days_passed += greg_month_count[i];
     }
-    days_passed += day + 1 * ((year < 4) || (month <= 8 && year == 4));
+    days_passed += day + get_jul_exception_offset(month, year);
   } else {
     /* to consider countin from past year since the date is below Ethiopian new
      * year */
@@ -120,19 +126,12 @@ int isJulianLeapYear(int year) {
 
 int ethMaxDays(int month, int year) {
   // returns maximum ethiopian date 365 || 366 of that current year
-  year += 1;
   if (year < 1752 || (year == 1752 && month <= 8)) {
-    if (month <= 8)
-      return 365 + int((year - 8) % 4 == 0);
-    else
-      return 365 + int((year - 7) % 4 == 0);
-  } else {
-    if (month <= 9)
-      return 365 + int((year - 8) % 4 == 0);
-    else {
-      return 365 + int((year - 7) % 4 == 0);
-    }
+    year += int(month > 8); // checks the current ethiopian year
+    return 365 + int((year - 8) % 4 == 3);
   }
+  year += int(month > 9);
+  return 365 + int((year - 8) % 4 == 3);
 }
 
 void print_header(int year, int month, int eth_passed, int max_eth) {
