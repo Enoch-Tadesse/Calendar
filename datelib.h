@@ -33,16 +33,10 @@ int get_century_offset(int);
 
 struct Cell {
 
-  char gregVal[7] = {' ', ' ', ' ', ' ', ' ', '|', '\0'};
-  char ethVal[7] = {' ', ' ', ' ', ' ', ' ', '|', '\0'};
-  void set_greg_val(int num) {
-    int i = 4;
-    while (num > 0) {
-      gregVal[i] = char(num % 10 + '0');
-      i -= 1;
-      num /= 10;
-    }
-  }
+  // char gregVal[7] = {' ', ' ', ' ', ' ', ' ', '|', '\0'};
+  //  char ethVal[7] = {' ', ' ', ' ', ' ', ' ', '|', '\0'};
+  int gregVal = 0;
+  int ethVal = 0;
   void set_eth_val(int num, int max) {
     if (num <= 0) // to handle month that start within pagumen
       num += max % 100;
@@ -53,11 +47,6 @@ struct Cell {
     num %= 30;    // limits it to a month count of 30
     if (num == 0) // if it's the last day of the month
       num = 30;
-    int i = int(log10(num)); // gets the digit length
-    while (num > 0) {
-      ethVal[i] = char(num % 10 + '0');
-      i -= 1;
-      num /= 10;
-    }
+    ethVal = num;
   }
 };

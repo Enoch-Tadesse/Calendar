@@ -1,6 +1,6 @@
 #include "datelib.h"
+#include <iomanip>
 #include <iostream>
-#include <ostream>
 #include <string>
 #include <vector>
 
@@ -257,7 +257,7 @@ void print(int month, int year) {
     cout << "|";
     Cell cell[7]; // intilializes 7 days of the week to print
     for (int c = 0; c < mat[r].size(); c++) {
-      cell[c].set_greg_val(mat[r][c]); // fill the Gregorean days
+      cell[c].gregVal = mat[r][c]; // fill the Gregorean days
       if (mat[r][c] != 0) {
         if (!((year < 8) || (year == 8 && month < 8) ||
               (year == 8 && month <= 8 && mat[r][c] < 29))) {
@@ -265,14 +265,21 @@ void print(int month, int year) {
         } // fill the Ethiopian days
         ethDay++;
       }
-
-      cout << cell[c].gregVal; // prints the gregorean half
+      if (cell[c].gregVal != 0)
+        cout << setw(5) << right << cell[c].gregVal
+             << "|"; // prints the gregorean half
+      else
+        cout << setw(6) << right << "|";
     }
     cout << endl;
 
     cout << "|";
     for (int c = 0; c < mat[r].size(); c++) {
-      cout << cell[c].ethVal; // prints the Ethiopian half
+      if (cell[c].ethVal != 0)
+        cout << setw(5) << left << cell[c].ethVal
+             << "|"; // prints the Ethiopian half
+      else
+        cout << setw(6) << right << "|";
     }
     cout << endl;
     cout << "|-----------------------------------------|" << endl;
