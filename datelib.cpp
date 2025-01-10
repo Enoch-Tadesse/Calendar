@@ -138,7 +138,7 @@ void print_header(int year, int month, int eth_passed, int max_eth) {
   /* prints header for Gregorean year and Ethiopian year
    * also Gregorean months and Ethiopian months */
 
-  cout << "Gregorean Year: " << year << '\t';
+  cout << "Gregorean Year: " << setw(8) << left << year;
   if (year - 8 > 0) {
     cout << "Ethiopian Year: " << year - 8 << " - " << year - 7 << endl;
   } else if (year - 8 == 0) {
@@ -147,7 +147,7 @@ void print_header(int year, int month, int eth_passed, int max_eth) {
     cout << endl;
   }
 
-  cout << greg_months[month - 1] << "\t";
+  cout << setw(24) << left << greg_months[month - 1];
   if (year > 8 || year == 8 && month >= 8) {
     int days_greg =
         greg_month_count[month - 1] +
