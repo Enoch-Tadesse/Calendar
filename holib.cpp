@@ -15,7 +15,7 @@ holiday eth_holi = {{"Enkutatash", {1, 366}},
                     {"Derg Downfall Day", {8, 260}},
                     {"*Eid al-Adha", {9, 270}},
                     {"*The Prophet's Birthday", {12, 360}}};
-// Prophet's Birthday is not working.
+
 holiday specialHoliDates(int year) {
   holiday corrected = eth_holi;
   corrected["Gena"].second -= int((year - 7) % 3 == 0);
@@ -26,7 +26,7 @@ std::vector<std::string> get_eth_holidays(int month, int year,
   std::vector<std::string> collections;
   holiday corr_eth_holi = specialHoliDates(year);
   int upper_limit = (days_passed + greg_month_count[month - 1]);
-  // ignored % 365 for Prophet's birthday
+
   int lower_limit = upper_limit - greg_month_count[month - 1];
 
   for (auto day : corr_eth_holi) {
