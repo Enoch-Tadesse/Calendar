@@ -3,44 +3,47 @@
 #include <unordered_map>
 #include <vector>
 
-typedef std::unordered_map<std::string, std::pair<int, int>> holiday;
-holiday eth_holi = {{"Enkutatash", {1, 366}},
-                    {"Meskel", {1, 382}},
-                    {"Gena", {4, 119}},
-                    {"Timket", {5, 131}},
-                    {"Labour's Day", {7, 233}},
-                    {"Veteran's Day", {7, 237}},
-                    {"Adwa Victory Day", {5, 173}},
-                    {"*Eid al-Fitr", {6, 202}},
-                    {"Derg Downfall Day", {8, 260}},
-                    {"*Eid al-Adha", {9, 270}},
-                    {"*The Prophet's Birthday", {12, 360}}};
+typedef std::unordered_map<std::string, std::vector<int>> holiday;
+
+holiday eth_holi = {
+    {"Meskel", {1, 382}},
+    {"Enkutatash", {1, 366}},
+    {"*Mawlid", {12, 360}},
+    {"*Eid al-Adha", {9, 270}},
+    {"Derg Downfall Day", {8, 260}},
+    {"Veteran's Day", {7, 237}},
+    {"Labour's Day", {7, 233}},
+    {"*Eid al-Fitr", {6, 202}},
+    {"Adwa Victory Day", {5, 173}},
+    {"Timket", {5, 131}},
+    {"Gena", {4, 119}},
+};
 
 holiday specialHoliDates(int year) {
   holiday corrected = eth_holi;
-  corrected["Gena"].second -= int((year - 7) % 3 == 0);
+  corrected["Gena"][1] -= int((year - 7) % 3 == 0);
   return corrected;
 }
 std::vector<std::string> get_eth_holidays(int month, int year,
                                           int days_passed) {
   std::vector<std::string> collections;
+  int offset = int((year - 8) % 4 == 3);
+  int mod = ethMaxDays(month, year);
   holiday corr_eth_holi = specialHoliDates(year);
   int upper_limit = (days_passed + greg_month_count[month - 1]);
 
   int lower_limit = upper_limit - greg_month_count[month - 1];
 
   for (auto day : corr_eth_holi) {
-    if ((day.second.second % 365 <= upper_limit &&
-         day.second.second % 365 >= lower_limit) ||
-        (day.second.second <= upper_limit &&
-         day.second.second >= lower_limit)) {
-      int bin_day = day.second.second % 365;
-      if (bin_day >= 360)
-        bin_day -= 330;
+    if ((day.second[1] % mod < upper_limit &&
+         day.second[1] % mod >= lower_limit) ||
+        (day.second[1] < upper_limit && day.second[1] >= lower_limit)) {
+      int bin_day = day.second[1] % 365;
+      bin_day = bin_day - ((bin_day - 1) / 30) * 30;
       std::string send =
           day.first + " : " + greg_months[month - 1] + " " +
-          std::to_string((day.second.second - lower_limit + 1) % 365) + " / " +
-          eth_months[day.second.first - 1] + " " + std::to_string(bin_day);
+          std::to_string((day.second[1] - lower_limit + 1) % mod + offset) +
+          " / " + eth_months[day.second[0] - 1] + " " + std::to_string(bin_day);
       collections.push_back(send);
     }
   }

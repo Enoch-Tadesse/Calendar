@@ -1,4 +1,5 @@
 #include "datelib.h"
+#include "holib.h"
 #include <iomanip>
 #include <iostream>
 #include <string>
@@ -139,13 +140,15 @@ void print_header(int year, int month, int eth_passed, int max_eth) {
    * also Gregorean months and Ethiopian months */
 
   cout << "Gregorean Year: " << setw(8) << left << year;
-  if (year - 8 > 0) {
-    cout << "Ethiopian Year: " << year - 8 << " - " << year - 7 << endl;
-  } else if (year - 8 == 0) {
-    cout << "Ethiopian Year: " << year - 7 << endl;
-  } else {
-    cout << endl;
-  }
+  cout << "Ethiopian Year: ";
+  if (year - 8 <= 0) {
+    cout << abs(year - 8 - 1) << " BC - ";
+  } else
+    cout << year - 8 << " - ";
+  if (year - 7 <= 0) {
+    cout << abs(year - 7 - 1) << " BC" << endl;
+  } else
+    cout << year - 7 << endl;
 
   cout << setw(24) << left << greg_months[month - 1];
   if (year > 8 || year == 8 && month >= 8) {
@@ -243,7 +246,6 @@ void print(int month, int year) {
 
   int ethDay = calc_days_passed(month, year);
   int ethMax = ethMaxDays(month, year);
-
   print_header(year, month, ethDay, ethMax);
 
   vector<vector<int>> mat = con_matirx(month, year);
@@ -252,17 +254,27 @@ void print(int month, int year) {
   cout << "|Sun  |Mon  |Tue  |Wed  |Thu  |Fri  |Sat  |" << endl;
   cout << "|-----------------------------------------|" << endl;
 
+  vector<string> holidays =
+      year >= 1900 ? get_eth_holidays(month, year, ethDay) : vector<string>();
+  int h_counter = holidays.size() - 1;
+
   for (int r = 0; r < mat.size(); r++) {
 
     cout << "|";
     Cell cell[7]; // intilializes 7 days of the week to print
+    // static bool guard;
     for (int c = 0; c < mat[r].size(); c++) {
       cell[c].gregVal = mat[r][c]; // fill the Gregorean days
+      /* guard = ((year < 8) || (year == 8 && month < 8) ||
+                (year == 8 && month <= 8 &&
+                 mat[r][c] < 29)); // prevents the printing of eth calendar
+         below
+                                   // year 8 and month 8*/
       if (mat[r][c] != 0) {
-        if (!((year < 8) || (year == 8 && month < 8) ||
-              (year == 8 && month <= 8 && mat[r][c] < 29))) {
-          cell[c].set_eth_val(ethDay, ethMax);
-        } // fill the Ethiopian days
+        // if (!guard) {
+        cell[c].set_eth_val(ethDay, ethMax);
+        // }
+        // fill the Ethiopian days
         ethDay++;
       }
       if (cell[c].gregVal != 0)
@@ -280,6 +292,10 @@ void print(int month, int year) {
              << "|"; // prints the Ethiopian half
       else
         cout << setw(6) << right << "|";
+    }
+    if (h_counter >= 0) {
+      cout << setw(5) << right << " " << holidays[h_counter];
+      h_counter--;
     }
     cout << endl;
     cout << "|-----------------------------------------|" << endl;
