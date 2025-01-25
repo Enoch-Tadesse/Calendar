@@ -75,6 +75,7 @@ int calc_days_passed_jul(int month, int year) {
   int days_passed = 0;
 
   if (month > 8) {
+    /* if the date given is before the Ethiopian new year */
     int ethiopianNewYearDay = (year - 7) % 4 == 0 ? 30 : 29;
     days_passed += day - ethiopianNewYearDay;
     for (int i = 7; i < month - 1; i++) {
@@ -131,10 +132,11 @@ int isJulianLeapYear(int year) {
 int ethMaxDays(int month, int year) {
   // returns maximum ethiopian date 365 || 366 of that current year
   if (year < 1752 || (year == 1752 && month <= 8)) {
-    year += int(month > 8); // checks the current ethiopian year
+    year += int(month > 8); /* checks the current ethiopian year
+                               whether before or after new year*/
     return 365 + int((year - 8) % 4 == 3);
   }
-  year += int(month > 9);
+  year += int(month > 9); // this also checks the current ethiopian year
   return 365 + int((year - 8) % 4 == 3);
 }
 
@@ -192,7 +194,7 @@ void print_header(int year, int month, int eth_passed, int max_eth) {
   cout << endl;
 }
 
-vector<vector<int>> con_matirx(int month, int year) {
+vector<vector<int>> con_matrix(int month, int year) {
   /* returns a matrix of gregorean days using columns as
    * days of the week and mat[r][c] as the value */
   int century_code;
@@ -257,7 +259,7 @@ void print(int month, int year) {
   int ethMax = ethMaxDays(month, year);
   print_header(year, month, ethDay, ethMax);
 
-  vector<vector<int>> mat = con_matirx(month, year);
+  vector<vector<int>> mat = con_matrix(month, year);
 
   cout << "|-----------------------------------------|" << endl;
   cout << "|Sun  |Mon  |Tue  |Wed  |Thu  |Fri  |Sat  |" << endl;
