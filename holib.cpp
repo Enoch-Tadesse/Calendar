@@ -8,12 +8,9 @@ typedef std::unordered_map<std::string, std::vector<int>> holiday;
 holiday eth_holi = {
     {"Meskel", {1, 382}},
     {"Enkutatash", {1, 366}},
-    {"*Mawlid", {12, 360}},
-    {"*Eid al-Adha", {9, 270}},
     {"Derg Downfall Day", {8, 260}},
     {"Veteran's Day", {7, 237}},
     {"Labour's Day", {7, 233}},
-    {"*Eid al-Fitr", {6, 202}},
     {"Adwa Victory Day", {5, 173}},
     {"Timket", {5, 131}},
     {"Gena", {4, 119}},
@@ -21,17 +18,18 @@ holiday eth_holi = {
 
 holiday specialHoliDates(int year) {
   holiday corrected = eth_holi;
-  corrected["Gena"][1] -= int((year - 7) % 3 == 0);
+  corrected["Gena"][1] -= int((year - 7) % 4 == 0);
   return corrected;
 }
+
 std::vector<std::string> get_eth_holidays(int month, int year,
                                           int days_passed) {
   std::vector<std::string> collections;
-  int offset = int((year - 8) % 4 == 3);
+  int offset = int((year - 3) % 4 == 0);
   int mod = ethMaxDays(month, year);
   holiday corr_eth_holi = specialHoliDates(year);
-  int upper_limit = (days_passed + greg_month_count[month - 1]);
 
+  int upper_limit = (days_passed + greg_month_count[month - 1]);
   int lower_limit = upper_limit - greg_month_count[month - 1];
 
   for (auto day : corr_eth_holi) {
