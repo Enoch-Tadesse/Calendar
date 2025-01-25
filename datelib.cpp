@@ -7,16 +7,18 @@
 
 using namespace std;
 
-string eth_months[] = {"Meskerem", "Tikimt",   "Hidar",   "Tahsas", "Tir",
-                       "Yekatit",  "Meggabit", "Miyazya", "Ginbot", "Sene",
-                       "Hamle",    "Nehase",   "Pagume"};
-int eth_months_count[] = {30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 5};
-string greg_months[] = {"January",   "February", "March",    "April",
-                        "May",       "June",     "July",     "August",
-                        "September", "October",  "November", "December"};
-vector<int> greg_month_count = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+const string eth_months[] = {
+    "Meskerem", "Tikimt", "Hidar", "Tahsas", "Tir",    "Yekatit", "Meggabit",
+    "Miyazya",  "Ginbot", "Sene",  "Hamle",  "Nehase", "Pagume"};
+const vector<int> eth_months_count = {30, 30, 30, 30, 30, 30, 30,
+                                      30, 30, 30, 30, 30, 5};
+const string greg_months[] = {"January",   "February", "March",    "April",
+                              "May",       "June",     "July",     "August",
+                              "September", "October",  "November", "December"};
+const vector<int> greg_month_count = {31, 28, 31, 30, 31, 30,
+                                      31, 31, 30, 31, 30, 31};
 
-vector<int> greg_month_code = {0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5};
+const vector<int> greg_month_code = {0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5};
 
 int get_century_offset(int year) {
   // returns the century offset based on their century
@@ -162,16 +164,17 @@ void print_header(int year, int month, int eth_passed, int max_eth) {
     }
     int start = floor(eth_passed / 30);
 
-    eth_months_count[12] = max_eth % 360;
-    eth_months_count[start % 13] -= eth_passed % 30;
+    vector<int> eth_months_count_cpy = eth_months_count;
+    eth_months_count_cpy[12] = max_eth % 360;
+    eth_months_count_cpy[start % 13] -= eth_passed % 30;
 
     if (eth_passed % 30 == 0) // accounting "meskerem"
       cout << eth_months[start - 1] << "-";
     if (eth_passed < 0)
-      cout << eth_months[12] << "-"; // pagument starting months
+      cout << eth_months[12] << "-"; // pagumen starting months
     while (days_greg > 1) {
       start %= 13;
-      days_greg -= eth_months_count[start];
+      days_greg -= eth_months_count_cpy[start];
       if (days_greg > 1)
         cout << eth_months[start] << "-";
       else
