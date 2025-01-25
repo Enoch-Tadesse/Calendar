@@ -1,5 +1,6 @@
 #include "datelib.h"
 #include "holib.h"
+#include <cmath>
 #include <iomanip>
 #include <iostream>
 #include <string>
@@ -168,8 +169,13 @@ void print_header(int year, int month, int eth_passed, int max_eth) {
     eth_months_count_cpy[12] = max_eth % 360;
     eth_months_count_cpy[start % 13] -= eth_passed % 30;
 
-    if (eth_passed % 30 == 0) // accounting "meskerem"
-      cout << eth_months[start - 1] << "-";
+    if (eth_passed % 30 == 0) { // accounting "meskerem"
+      if (start == 0) { // counter Segmentation fault (core dumped) error
+        cout << eth_months[0] << "-"; //
+      } else {
+        cout << eth_months[start - 1] << "-";
+      }
+    }
     if (eth_passed < 0)
       cout << eth_months[12] << "-"; // pagumen starting months
     while (days_greg > 1) {
@@ -227,7 +233,7 @@ vector<vector<int>> con_matirx(int month, int year) {
     return mat;
   }
 
-  // this hald is for the special date sep, 1572
+  // this hald is for the special date sep, 1752
   int fillValues = 0;
   rows = ceil((float)(remaining_days - 11) / 7.0) + 1;
   vector<vector<int>> mat(rows, single_row);
@@ -265,18 +271,10 @@ void print(int month, int year) {
 
     cout << "|";
     Cell cell[7]; // intilializes 7 days of the week to print
-    // static bool guard;
     for (int c = 0; c < mat[r].size(); c++) {
       cell[c].gregVal = mat[r][c]; // fill the Gregorean days
-      /* guard = ((year < 8) || (year == 8 && month < 8) ||
-                (year == 8 && month <= 8 &&
-                 mat[r][c] < 29)); // prevents the printing of eth calendar
-         below
-                                   // year 8 and month 8*/
       if (mat[r][c] != 0) {
-        // if (!guard) {
         cell[c].set_eth_val(ethDay, ethMax);
-        // }
         // fill the Ethiopian days
         ethDay++;
       }
