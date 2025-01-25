@@ -1,19 +1,18 @@
 #pragma once
-#include <cwchar>
 #include <iostream>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-extern std::unordered_map<int, int> century_code;
+// extern std::unordered_map<int, int> century_code;
 
-extern std::vector<int> greg_month_count;
-extern std::string eth_months[];
-extern int eth_months_count[];
-extern std::string greg_months[];
-extern std::unordered_map<int, int> greg_century_code;
+const extern std::vector<int> greg_month_count;
+const extern std::string eth_months[];
+const extern std::vector<int> eth_months_count;
+const extern std::string greg_months[];
+// extern std::unordered_map<int, int> greg_century_code;
 
-extern std::vector<int> greg_month_code;
+const extern std::vector<int> greg_month_code;
 
 void print_header(int, int, int, int);
 int calc_days_passed_greg(int, int);
@@ -32,9 +31,6 @@ int get_jul_exception_offset(int, int);
 int get_century_offset(int);
 
 struct Cell {
-
-  // char gregVal[7] = {' ', ' ', ' ', ' ', ' ', '|', '\0'};
-  //  char ethVal[7] = {' ', ' ', ' ', ' ', ' ', '|', '\0'};
   int gregVal = 0;
   int ethVal = 0;
   void set_eth_val(int num, int max) {
