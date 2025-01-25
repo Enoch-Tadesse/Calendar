@@ -4,13 +4,10 @@
 #include <unordered_map>
 #include <vector>
 
-// extern std::unordered_map<int, int> century_code;
-
 const extern std::vector<int> greg_month_count;
 const extern std::string eth_months[];
 const extern std::vector<int> eth_months_count;
 const extern std::string greg_months[];
-// extern std::unordered_map<int, int> greg_century_code;
 
 const extern std::vector<int> greg_month_code;
 
