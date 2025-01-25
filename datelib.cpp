@@ -146,50 +146,53 @@ void print_header(int year, int month, int eth_passed, int max_eth) {
 
   cout << "Gregorean Year: " << setw(8) << left << year;
   cout << "Ethiopian Year: ";
-  if (year - 8 <= 0) {
+  if (year - 8 <= 0) { // considering BC in Ethiopian year
     cout << abs(year - 8 - 1) << " BC - ";
   } else
     cout << year - 8 << " - ";
-  if (year - 7 <= 0) {
+  if (year - 7 <= 0) { // considering AD in Ethiopian year
     cout << abs(year - 7 - 1) << " BC" << endl;
   } else
     cout << year - 7 << endl;
 
   cout << setw(24) << left << greg_months[month - 1];
-  if (year > 8 || year == 8 && month >= 8) {
-    int days_greg =
-        greg_month_count[month - 1] +
-        (month == 2 && (isGregLeapYear(year) || isJulianLeapYear(year)));
-    days_greg -= 11 * int(year == 1752 && month == 9);
-    if (year == 8 && month == 8) {
-      eth_passed = 3;
-      days_greg = 3;
-    }
-    int start = floor(eth_passed / 30);
+  /*calculate the Gregorean month duration considering special cases*/
+  int days_greg =
+      greg_month_count[month - 1] +
+      (month == 2 && (isGregLeapYear(year) || isJulianLeapYear(year)));
 
-    vector<int> eth_months_count_cpy = eth_months_count;
-    eth_months_count_cpy[12] = max_eth % 360;
-    eth_months_count_cpy[start % 13] -= eth_passed % 30;
+  days_greg -= 11 * int(year == 1752 && month == 9);
 
-    if (eth_passed % 30 == 0) { // accounting "meskerem"
-      if (start == 0) { // counter Segmentation fault (core dumped) error
-        cout << eth_months[0] << "-"; //
-      } else {
-        cout << eth_months[start - 1] << "-";
-      }
-    }
-    if (eth_passed < 0)
-      cout << eth_months[12] << "-"; // pagumen starting months
-    while (days_greg > 1) {
-      start %= 13;
-      days_greg -= eth_months_count_cpy[start];
-      if (days_greg > 1)
-        cout << eth_months[start] << "-";
-      else
-        cout << eth_months[start] << '\t';
+  if (year == 8 && month == 8) {
+    // manual adjustment for historical alignment
+    eth_passed = 3;
+    days_greg = 3;
+  }
 
-      start++;
+  int start = floor(eth_passed / 30); // determine the starting Ethiopian month
+
+  vector<int> eth_months_count_cpy = eth_months_count;
+  eth_months_count_cpy[12] = max_eth % 360;
+  eth_months_count_cpy[start % 13] -= eth_passed % 30;
+
+  if (eth_passed % 30 == 0) { // accounting "meskerem"
+    if (start == 0) {         // counter Segmentation fault (core dumped) error
+      cout << eth_months[0] << "-";
+    } else {
+      cout << eth_months[start - 1] << "-";
     }
+  }
+  if (eth_passed < 0)
+    cout << eth_months[12] << "-"; // pagumen starting months
+  while (days_greg > 1) {
+    start %= 13; // to loop back the Ethiopian month index
+    days_greg -= eth_months_count_cpy[start];
+    if (days_greg > 1)
+      cout << eth_months[start] << "-";
+    else
+      cout << eth_months[start] << '\t';
+
+    start++;
   }
   cout << endl;
 }
