@@ -9,9 +9,9 @@ holiday eth_holi = {
     {"Meskel", {1, 17, 0}},
     {"Enkutatash", {1, 1, 0}},
     {"Derg Downfall Day", {9, 290, 0}},
-    {"Veteran's Day", {7, 237, 0}},
-    {"Labour's Day", {7, 233, 0}},
-    {"Adwa Victory Day", {5, 173, 0}},
+    {"Veteran's Day", {8, 237, 0}},
+    {"Labour's Day", {8, 233, 0}},
+    {"Adwa Victory Day", {6, 173, 0}},
     {"Timket", {5, 131, 0}},
     {"Gena", {4, 119, 0}},
 };
