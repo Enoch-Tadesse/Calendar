@@ -15,7 +15,7 @@ void print_header(int, int, int, int);
 int calc_days_passed_greg(int, int);
 int calc_days_passed_jul(int, int);
 
-void print(int, int);
+void print(int, int, int = -1, int = -1);
 std::vector<std::vector<int>> con_matirx(int, int);
 
 int get_leap_year_code(int, int);

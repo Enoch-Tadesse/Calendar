@@ -146,14 +146,24 @@ void print_header(int year, int month, int eth_passed, int max_eth) {
 
   cout << "Gregorean Year: " << setw(8) << left << year;
   cout << "Ethiopian Year: ";
-  if (year - 8 <= 0) { // considering BC in Ethiopian year
-    cout << abs(year - 8 - 1) << " BC - ";
-  } else
-    cout << year - 8 << " - ";
-  if (year - 7 <= 0) { // considering AD in Ethiopian year
-    cout << abs(year - 7 - 1) << " BC" << endl;
-  } else
-    cout << year - 7 << endl;
+  if ((month == 9 && year > 1752) || (month == 8 && year <= 1752)) {
+    if (year - 8 <= 0) { // considering BC in Ethiopian year
+      cout << abs(year - 8 - 1) << " BC - ";
+    } else // considering AD in Ethiopian year
+      cout << year - 8 << " - ";
+    if (year - 7 <= 0) {
+      cout << abs(year - 7 - 1) << " BC" << endl;
+    } else
+      cout << year - 7 << endl;
+
+  } else { // if no year transition on the month
+    int eq = year - 7 -
+             1 * ((month < 9 && year > 1752) || (month < 8 && year >= 1752));
+    if (eq > 0)
+      cout << eq << endl;
+    else
+      cout << abs(eq - 1) << " BC" << endl;
+  }
 
   cout << setw(24) << left << greg_months[month - 1];
   /*calculate the Gregorean month duration considering special cases*/
@@ -254,7 +264,7 @@ vector<vector<int>> con_matrix(int month, int year) {
   return mat;
 }
 
-void print(int month, int year) {
+void print(int month, int year, int todayDay, int todayMonth) {
   /* this function prints the whole body and is responsible
    * for the call of every other function */
 
@@ -270,7 +280,7 @@ void print(int month, int year) {
 
   vector<string> holidays =
       year >= 1900 ? get_eth_holidays(month, year, ethDay) : vector<string>();
-  int h_counter = holidays.size() - 1;
+  int holiday_counter = holidays.size() - 1;
 
   for (int r = 0; r < mat.size(); r++) {
 
@@ -282,26 +292,34 @@ void print(int month, int year) {
         cell[c].set_eth_val(ethDay, ethMax);
         // fill the Ethiopian days
         ethDay++;
-      }
-      if (cell[c].gregVal != 0)
-        cout << setw(5) << right << cell[c].gregVal
-             << "|"; // prints the gregorean half
-      else
+        if (cell[c].gregVal == todayDay && month == todayMonth)
+          cout << "\033[48;5;24m" << setw(5) << right << cell[c].gregVal
+               << "\033[0m" << "|"; // highlights the current day
+        else {
+          cout << setw(5) << right << cell[c].gregVal
+               << "|"; // prints the gregorean half
+        }
+      } else
         cout << setw(6) << right << "|";
     }
     cout << endl;
 
     cout << "|";
     for (int c = 0; c < mat[r].size(); c++) {
-      if (cell[c].ethVal != 0)
-        cout << setw(5) << left << cell[c].ethVal
-             << "|"; // prints the Ethiopian half
-      else
+      if (cell[c].ethVal != 0) {
+        if (cell[c].gregVal == todayDay && month == todayMonth)
+          cout << "\033[48;5;24m" << setw(5) << left << cell[c].ethVal
+               << "\033[0m" << "|"; // highlights the current day
+        else {
+          cout << setw(5) << left << cell[c].ethVal
+               << "|"; // prints the Ethiopian half
+        }
+      } else
         cout << setw(6) << right << "|";
     }
-    if (h_counter >= 0) {
-      cout << setw(5) << right << " " << holidays[h_counter];
-      h_counter--;
+    if (holiday_counter >= 0) {
+      cout << setw(5) << right << " " << holidays[holiday_counter];
+      holiday_counter--;
     }
     cout << endl;
     cout << "|-----------------------------------------|" << endl;
