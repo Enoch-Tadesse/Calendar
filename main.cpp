@@ -1,66 +1,42 @@
 #include "datelib.h"
+#include <ctime>
 #include <iostream>
 
-using namespace std;
+void handle_error() {
+  // handles error input and display error messages
+  std::cout << "Invalid Usage!" << std::endl;
+  std::cout << "Usage: ecal [<1,12> optional] [<1,5999> optional]" << std::endl;
+  exit(1);
+}
+int main(int argc, char *argv[]) {
+  int month, year;
 
-int main() {
-label:
-  char type;
-  std::cout << "Enter 'w' for whole year or 's' for specific month and year. "
-            << std::endl;
-  std::cin >> type;
-  switch (type) {
-  case 'w':
-  case 'W':
-    int year;
-    std::cout << "Enter the calendar year between 1 and 5999 in gregorean: "
-              << std::endl;
-    std::cin >> year;
-    if (year < 1 or year > 5999) {
-      std::cerr << "You entered invalid year. Please try again." << std::endl;
-      std::cin.clear();
-      std::cin.ignore();
-      goto label;
+  // get current datetime
+  std::time_t today = std::time(0);
+  std::tm *now = std::localtime(&today);
+  int todayDay = now->tm_mday;
+  int todayMonth = now->tm_mon + 1;
+  int todayYear = now->tm_year + 1900;
+
+  if (argc == 3) { // if called with month and year
+    month = atoi(argv[1]);
+    year = atoi(argv[2]);
+    if (month < 1 || month > 12 || year < 1 || year > 5999) {
+      handle_error();
     }
-    for (int month = 1; month <= 12; month++)
-      print(month, year);
-    std::cout << "Press any key to exit. " << std::endl;
-    std::cin.clear();
-    std::cin.ignore();
-    cin.get();
-    break;
-  case 's':
-  case 'S':
-    int month;
-    std::cout << "Enter the month between 1 - 12: ";
-    std::cin >> month;
-    if (month < 1 or month > 12) {
-      std::cerr << "You entered invalid month. Please try again." << std::endl;
-      std::cin.clear();
-      std::cin.ignore();
-      goto label;
+    std::cout << todayYear << std::endl;
+    todayYear == year ? print(month, year, todayDay, todayMonth)
+                      : print(month, year);
+  } else if (argc == 2) { // if called with only year
+    year = atoi(argv[1]);
+    if (year < 1 || year > 5999) {
+      handle_error();
     }
-    std::cout << "Enter the calendar year: ";
-    std::cin >> year;
-    if (year < 1 or year > 5999) {
-      std::cerr << "You entered invalid year. Please try again." << std::endl;
-      std::cin.clear();
-      std::cin.ignore();
-      goto label;
-    }
-    print(month, year);
-    std::cout << "Press any key to exit. " << std::endl;
-    std::cin.clear();
-    std::cin.ignore();
-    cin.get();
-    break;
-  default:
-    std::cerr << "You entered invalid type. Please try again." << std::endl;
-    std::cin.clear();
-    std::cin.ignore();
-    goto label;
-    break;
+    for (int i = 1; i <= 12; i++)
+      year == todayYear ? print(i, year, todayDay, todayMonth) : print(i, year);
+  } else if (argc == 1) { // if called without argument
+    print(todayMonth, todayYear, todayDay, todayMonth);
+  } else { // more than 3 arguments
+    handle_error();
   }
-
-  return 0;
 }
