@@ -274,9 +274,9 @@ void print(int month, int year, int todayDay, int todayMonth) {
 
   vector<vector<int>> mat = con_matrix(month, year);
 
-  cout << "|-----------------------------------------|" << endl;
-  cout << "|Sun  |Mon  |Tue  |Wed  |Thu  |Fri  |Sat  |" << endl;
-  cout << "|-----------------------------------------|" << endl;
+  cout << "|----------------------------------|" << endl;
+  cout << "|Sun |Mon |Tue |Wed |Thu |Fri |Sat |" << endl;
+  cout << "|----------------------------------|" << endl;
 
   vector<string> holidays =
       year >= 1900 ? get_eth_holidays(month, year, ethDay) : vector<string>();
@@ -293,14 +293,14 @@ void print(int month, int year, int todayDay, int todayMonth) {
         // fill the Ethiopian days
         ethDay++;
         if (cell[c].gregVal == todayDay && month == todayMonth)
-          cout << "\033[48;5;24m" << setw(5) << right << cell[c].gregVal
+          cout << "\033[48;5;24m" << setw(4) << right << cell[c].gregVal
                << "\033[0m" << "|"; // highlights the current day
         else {
-          cout << setw(5) << right << cell[c].gregVal
+          cout << setw(4) << right << cell[c].gregVal
                << "|"; // prints the gregorean half
         }
       } else
-        cout << setw(6) << right << "|";
+        cout << setw(5) << right << "|";
     }
     cout << endl;
 
@@ -308,20 +308,20 @@ void print(int month, int year, int todayDay, int todayMonth) {
     for (int c = 0; c < mat[r].size(); c++) {
       if (cell[c].ethVal != 0) {
         if (cell[c].gregVal == todayDay && month == todayMonth)
-          cout << "\033[48;5;24m" << setw(5) << left << cell[c].ethVal
+          cout << "\033[48;5;24m" << setw(4) << left << cell[c].ethVal
                << "\033[0m" << "|"; // highlights the current day
         else {
-          cout << setw(5) << left << cell[c].ethVal
+          cout << setw(4) << left << cell[c].ethVal
                << "|"; // prints the Ethiopian half
         }
       } else
-        cout << setw(6) << right << "|";
+        cout << setw(5) << right << "|";
     }
     if (holiday_counter >= 0) {
-      cout << setw(5) << right << " " << holidays[holiday_counter];
+      cout << setw(4) << right << " " << holidays[holiday_counter];
       holiday_counter--;
     }
     cout << endl;
-    cout << "|-----------------------------------------|" << endl;
+    cout << "|----------------------------------|" << endl;
   }
 }
