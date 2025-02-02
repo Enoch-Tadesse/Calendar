@@ -5,7 +5,7 @@
 void handle_error() {
   // handles error input and display error messages
   std::cout << "Invalid Usage!" << std::endl;
-  std::cout << "Usage: ecal [<1,12> optional] [<1,5999> optional]" << std::endl;
+  std::cout << "Usage: ecal [<1,12> optional] [<1,4599> optional]" << std::endl;
   exit(1);
 }
 int main(int argc, char *argv[]) {
@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
   if (argc == 3) { // if called with month and year
     month = atoi(argv[1]);
     year = atoi(argv[2]);
-    if (month < 1 || month > 12 || year < 1 || year > 5999) {
+    if (month < 1 || month > 12 || year < 1 || year > 4599) {
       handle_error();
     }
     std::cout << todayYear << std::endl;
@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
                       : print(month, year);
   } else if (argc == 2) { // if called with only year
     year = atoi(argv[1]);
-    if (year < 1 || year > 5999) {
+    if (year < 1 || year > 4599) {
       handle_error();
     }
     for (int i = 1; i <= 12; i++)
