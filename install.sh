@@ -6,6 +6,7 @@ install_x86_64() {
     curl -O https://raw.githubusercontent.com/Enoch-Tadesse/Calendar/main/releases/latest/download/ecal-linux-x86_64
     chmod +x ./ecal-linux-x86_64
     sudo cp ./ecal-linux-x86_64 /usr/bin/ecal
+    sudo cp ./ecal-linux-x86_64 /usr/local/bin/ecal
     sudo rm ./ecal-linux-x86_64
     echo "Installation for x86_64 completed."
 }
@@ -16,6 +17,7 @@ install_arm64() {
     curl -O https://raw.githubusercontent.com/Enoch-Tadesse/Calendar/main/releases/latest/download/ecal-linux-arm64
     chmod +x ./ecal-linux-arm64
     sudo cp ./ecal-linux-arm64 /usr/bin/ecal
+    sudo cp ./ecal-linux-arm64 /usr/local/bin/ecal
     sudo rm ./ecal-linux-arm64
     echo "Installation for arm64 completed."
 }
