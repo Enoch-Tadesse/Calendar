@@ -49,10 +49,8 @@ int calc_days_passed_greg(int month, int year) {
         day + get_century_offset(year); // century transitioning handling
 
   } else {
-
-    /*if month is above below and equal to september, add days from past year
-     * too*/
-
+    /*if month is above below and equal to september, add days from past
+     * year too*/
     days_passed += calc_days_passed(13, year - 1); // past year addition
 
     vector<int> month_count = greg_month_count;
@@ -83,8 +81,8 @@ int calc_days_passed_jul(int month, int year) {
     }
     days_passed += day + get_jul_exception_offset(month, year);
   } else {
-    /* to consider countin from past year since the date is below Ethiopian new
-     * year */
+    /* to consider countin from past year since the date is below Ethiopian
+     * new year */
     days_passed += calc_days_passed_jul(13, year - 1);
 
     vector<int> month_count = greg_month_count;
@@ -294,7 +292,8 @@ void print(int month, int year, int todayDay, int todayMonth) {
         ethDay++;
         if (cell[c].gregVal == todayDay && month == todayMonth)
           cout << "\033[48;5;24m" << setw(4) << right << cell[c].gregVal
-               << "\033[0m" << "|"; // highlights the current day
+               << "\033[0m"
+               << "|"; // highlights the current day
         else {
           cout << setw(4) << right << cell[c].gregVal
                << "|"; // prints the gregorean half
