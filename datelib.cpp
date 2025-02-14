@@ -143,7 +143,7 @@ void print_header(int year, int month, int eth_passed, int max_eth) {
    * also Gregorean months and Ethiopian months */
 
   cout << "Gregorean Year: " << setw(8) << left << year;
-  cout << "Ethiopian Year: ";
+  cout << "\033[33m" << "Ethiopian Year: "; // give yellow color
   if ((month == 9 && year > 1752) || (month == 8 && year <= 1752)) {
     if (year - 8 <= 0) { // considering BC in Ethiopian year
       cout << abs(year - 8 - 1) << " BC - ";
@@ -163,7 +163,9 @@ void print_header(int year, int month, int eth_passed, int max_eth) {
       cout << abs(eq - 1) << " BC" << endl;
   }
 
+  cout << "\033[0m"; // resets the yellow color
   cout << setw(24) << left << greg_months[month - 1];
+  cout << "\033[33m"; // re-inti yellow color for eth month
   /*calculate the Gregorean month duration considering special cases*/
   int days_greg =
       greg_month_count[month - 1] +
@@ -202,7 +204,7 @@ void print_header(int year, int month, int eth_passed, int max_eth) {
 
     start++;
   }
-  cout << endl;
+  cout << "\033[0m" << endl; // resets the color yelow for Eth month
 }
 
 vector<vector<int>> con_matrix(int month, int year) {
@@ -273,7 +275,8 @@ void print(int month, int year, int todayDay, int todayMonth) {
   vector<vector<int>> mat = con_matrix(month, year);
 
   cout << "|----------------------------------|" << endl;
-  cout << "|Sun |Mon |Tue |Wed |Thu |Fri |Sat |" << endl;
+  cout << "|" << "\033[31m" << "Sun |Mon |Tue |Wed |Thu |Fri |Sat |"
+       << "\033[0m" << endl; // marks the color red
   cout << "|----------------------------------|" << endl;
 
   vector<string> holidays =
@@ -307,10 +310,10 @@ void print(int month, int year, int todayDay, int todayMonth) {
     for (int c = 0; c < mat[r].size(); c++) {
       if (cell[c].ethVal != 0) {
         if (cell[c].gregVal == todayDay && month == todayMonth)
-          cout << "\033[48;5;24m" << setw(4) << left << cell[c].ethVal
+          cout << "\033[48;5;24;32m" << setw(4) << left << cell[c].ethVal
                << "\033[0m" << "|"; // highlights the current day
         else {
-          cout << setw(4) << left << cell[c].ethVal
+          cout << "\033[32m" << setw(4) << left << cell[c].ethVal << "\033[0m"
                << "|"; // prints the Ethiopian half
         }
       } else
