@@ -31,7 +31,8 @@ run : ecal
 
 ***VOILA***
 
-***Arch Unsupported or Wish to install manually?*** 
+***Arch Unsupported or Wish to install manually?***
+
 run : PATH/ $clang @sources.txt -o ecal.exe
 or
 run : PATH/ $g++ @sources.txt -o ecal.exe
