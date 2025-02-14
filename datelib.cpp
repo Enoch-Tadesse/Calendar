@@ -275,7 +275,7 @@ void print(int month, int year, int todayDay, int todayMonth) {
   vector<vector<int>> mat = con_matrix(month, year);
 
   cout << "|----------------------------------|" << endl;
-  cout << "|" << "\033[31m" << "Sun |Mon |Tue |Wed |Thu |Fri |Sat |"
+  cout << "\033[31m" << "|" << "Sun |Mon |Tue |Wed |Thu |Fri |Sat |"
        << "\033[0m" << endl; // marks the color red
   cout << "|----------------------------------|" << endl;
 
