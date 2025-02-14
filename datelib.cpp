@@ -281,8 +281,8 @@ void print(int month, int year, int todayDay, int todayMonth) {
 
   vector<string> holidays =
       year >= 1900 ? get_eth_holidays(month, year, ethDay) : vector<string>();
-  int holiday_counter = holidays.size() - 1;
-
+  // get holidays only when year is above 1900
+  int holiday_counter = 0;
   for (int r = 0; r < mat.size(); r++) {
 
     cout << "|";
@@ -319,9 +319,9 @@ void print(int month, int year, int todayDay, int todayMonth) {
       } else
         cout << setw(5) << right << "|";
     }
-    if (holiday_counter >= 0) {
+    if (holiday_counter < holidays.size()) {
       cout << setw(4) << right << " " << holidays[holiday_counter];
-      holiday_counter--;
+      holiday_counter++;
     }
     cout << endl;
     cout << "|----------------------------------|" << endl;
