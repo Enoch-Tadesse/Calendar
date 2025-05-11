@@ -14,6 +14,7 @@ holiday eth_holi = {
     {{6, 173}, "Adwa Victory Day"},
     {{8, 233}, "Labour's Day"},
     {{8, 237}, "Veteran's Day"},
+    {{9, 241}, "The Navity of Virgin Mary"},
     {{9, 290}, "Derg Downfall Day"},
 }; // the Ethiopian Holidays month with corresponding day since the new year
 
