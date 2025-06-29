@@ -46,7 +46,7 @@ To use `ecal` from the terminal anywhere:
 Run the install script:
 
 ```sh
-curl -f https://raw.githubusercontent.com/Enoch-Tadesse/Calendar/main/install.sh | bash
+curl -f https://raw.githubusercontent.com/Enoch-Tadesse/ECal/main/install.sh | bash
 ```
 
 You will be prompted for your user password.
