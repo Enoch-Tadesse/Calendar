@@ -1,57 +1,88 @@
-# Ethio-Greogorean Calendar
-A C++ program that displays calendar both in Gregorian and Ethiopian simultaneously.
+# Ethio-Gregorean Calendar
 
-Holidays are only displayed staring from 1900. As some of them make no sense to be displayed below 1900.
+A C++ program that displays the calendar in both Gregorian and Ethiopian formats simultaneously.
 
-Usage: ecal [<1,12> optional] [<1,4599> optional]
+**Note:** Holidays are only displayed starting from 1900, as some holidays do not make sense before that year.
 
-inputs are received in gregorean month and gregorean year.
+---
 
-**Compilation Guide**
+## Usage
 
-**Windows**:
+```
+ecal [<month: 1-12> (optional)] [<year: 1-4599> (optional)]
+```
 
-run : PATH/ $clang @sources.txt -o ecal.exe
+Inputs are received in Gregorian month and Gregorian year.
 
-or
+---
 
-run : PATH/ $g++ @sources.txt -o ecal.exe
+## Compilation Guide
 
-where $PATH is the path where you cloned the repo.
+### Windows
 
-Wish to use it on terminal from anywhere?
-    copy ecal.exe to C:/ProgramFiles/ecal/ 
-    add the path C:/programfiles/ecal to environment variable
+Compile using either:
 
-***AND YOU ARE DONE***
-
-**Linux** :
-
-run curl -f https://raw.githubusercontent.com/Enoch-Tadesse/Calendar/main/install.sh | bash
-
-you will be prompted for user password.
-
-run : ecal
-
-***VOILA***
-
-***Arch Unsupported or Wish to install manually?***
-
-run : PATH/ $clang @sources.txt -o ecal.exe
+```sh
+clang @sources.txt -o ecal.exe
+```
 
 or
 
-run : PATH/ $g++ @sources.txt -o ecal.exe
+```sh
+g++ @sources.txt -o ecal.exe
+```
 
-where $PATH is the path where you cloned the repo.
+> `@sources.txt` contains the list of source files. Run this command in the directory where you cloned the repo.
 
-run : PATH/ $sudo cp ./ecal.exe /usr/bin/ecal
+To use `ecal` from the terminal anywhere:
 
+1. Copy `ecal.exe` to `C:/ProgramFiles/ecal/`
+2. Add `C:/ProgramFiles/ecal` to your system's environment variables.
 
-***And you are Done***
+---
 
+### Linux
 
-Contact me:
-Telegram - @the_CS_guy
-Email - henitadesse97@gmail.com
-Github - https://github.com/Enoch-Tadesse
+Run the install script:
+
+```sh
+curl -f https://raw.githubusercontent.com/Enoch-Tadesse/Calendar/main/install.sh | bash
+```
+
+You will be prompted for your user password.
+
+Then run:
+
+```sh
+ecal
+```
+
+---
+
+### Arch Linux or Manual Installation
+
+Compile with:
+
+```sh
+clang @sources.txt -o ecal.exe
+```
+
+or
+
+```sh
+g++ @sources.txt -o ecal.exe
+```
+
+Then copy the executable to a system path:
+
+```sh
+sudo cp ./ecal.exe /usr/bin/ecal
+```
+
+---
+
+## Contact
+
+- Telegram: [@the_CS_guy](https://t.me/the_CS_guy)  
+- Email: henitadesse97@gmail.com  
+- GitHub: [https://github.com/Enoch-Tadesse](https://github.com/Enoch-Tadesse)
